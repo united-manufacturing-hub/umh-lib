@@ -1,4 +1,4 @@
-module github.com/united-manufacturing-hub/umh-lib
+module github.com/united-manufacturing-hub/umh-lib/v2
 
 go 1.18
 
