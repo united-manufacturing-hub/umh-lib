@@ -3,7 +3,7 @@ package internal
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/united-manufacturing-hub/umh-lib/pkg/datamodel"
+	"github.com/united-manufacturing-hub/umh-lib/v2/pkg/datamodel"
 	"hash/crc32"
 	"strconv"
 	"time"
