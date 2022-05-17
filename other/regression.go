@@ -1,4 +1,4 @@
-package internal
+package other
 
 type Xy struct {
 	X []float64

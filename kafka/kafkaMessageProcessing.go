@@ -1,13 +1,14 @@
 //go:build kafka
 // +build kafka
 
-package internal
+package kafka
 
 import (
 	"bytes"
 	"encoding/gob"
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 	"github.com/coocood/freecache"
+	"github.com/united-manufacturing-hub/umh-lib/v2/other"
 	"go.uber.org/zap"
 	"strings"
 )
@@ -73,7 +74,7 @@ func PutCacheKafkaMessageAsParsedMessage(msg *kafka.Message) (valid bool, messag
 		Payload:     payload,
 	}
 
-	var cacheKey = AsXXHash(msg.Key, msg.Value, []byte((*msg.TopicPartition.Topic)))
+	var cacheKey = other.AsXXHash(msg.Key, msg.Value, []byte((*msg.TopicPartition.Topic)))
 
 	var buffer bytes.Buffer
 	err := gob.NewEncoder(&buffer).Encode(pm)
@@ -95,7 +96,7 @@ func GetCacheParsedMessage(msg *kafka.Message) (valid bool, found bool, message 
 		return false, false, ParsedMessage{}
 	}
 
-	var cacheKey = AsXXHash(msg.Key, msg.Value, []byte((*msg.TopicPartition.Topic)))
+	var cacheKey = other.AsXXHash(msg.Key, msg.Value, []byte((*msg.TopicPartition.Topic)))
 	get, err := Messagecache.Get(cacheKey)
 	if err != nil {
 		return true, false, ParsedMessage{}

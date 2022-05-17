@@ -1,4 +1,4 @@
-package internal
+package iodd
 
 import (
 	"archive/zip"
@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/united-manufacturing-hub/umh-lib/v2/other"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -137,7 +138,7 @@ func readZipFile(zf *zip.File) ([]byte, error) {
 func getUrlWithRetry(url string) (body []byte, err error) {
 	cacheKey := fmt.Sprintf("getUrlWithRetry%s", url)
 
-	val, found := GetMemcached(cacheKey)
+	val, found := other.GetMemcached(cacheKey)
 	if found {
 		return val.([]byte), nil
 	}
@@ -151,10 +152,10 @@ func getUrlWithRetry(url string) (body []byte, err error) {
 			return
 		}
 		if status == 200 {
-			SetMemcached(cacheKey, body)
+			other.SetMemcached(cacheKey, body)
 			return
 		}
-		time.Sleep(GetBackoffTime(int64(i), 10*time.Second, 60*time.Second))
+		time.Sleep(other.GetBackoffTime(int64(i), 10*time.Second, 60*time.Second))
 	}
 	err = errors.New("failed to retrieve url after 10 tries")
 	return
@@ -164,7 +165,7 @@ var globalSleepTimer = 0
 
 // getUrl executes a GET request to an url and returns the body as bytes
 func getUrl(url string) (body []byte, err error, status int) {
-	time.Sleep(GetBackoffTime(int64(globalSleepTimer), 10*time.Millisecond, 1*time.Second))
+	time.Sleep(other.GetBackoffTime(int64(globalSleepTimer), 10*time.Millisecond, 1*time.Second))
 	globalSleepTimer += 1
 	var resp *http.Response
 	resp, err = http.Get(url)

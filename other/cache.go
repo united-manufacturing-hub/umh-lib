@@ -1,9 +1,9 @@
-package internal
+package other
 
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/united-manufacturing-hub/umh-lib/v2/pkg/datamodel"
+	"github.com/united-manufacturing-hub/umh-lib/v2/datamodel"
 	"hash/crc32"
 	"strconv"
 	"time"

@@ -1,12 +1,13 @@
 //go:build kafka
 // +build kafka
 
-package internal
+package kafka
 
 import (
 	"fmt"
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 	jsoniter "github.com/json-iterator/go"
+	"github.com/united-manufacturing-hub/umh-lib/v2/other"
 	"go.uber.org/zap"
 
 	"runtime"
@@ -58,16 +59,16 @@ func MemoryLimiter(allowedMemorySize int) {
 			zap.S().Errorf("Memory usage is too high: %d bytes, slowing ingress !", m.TotalAlloc)
 			nearMemoryLimit = true
 			debug.FreeOSMemory()
-			time.Sleep(FiveSeconds)
+			time.Sleep(other.FiveSeconds)
 		}
 		if m.Alloc > allowedSeventyFivePerc {
 			zap.S().Errorf("Memory usage is high: %d bytes !", m.TotalAlloc)
 			nearMemoryLimit = false
 			runtime.GC()
-			time.Sleep(FiveSeconds)
+			time.Sleep(other.FiveSeconds)
 		} else {
 			nearMemoryLimit = false
-			time.Sleep(OneSecond)
+			time.Sleep(other.OneSecond)
 		}
 	}
 }
@@ -87,12 +88,12 @@ func ProcessKafkaQueue(identifier string, topic string, processorChannel chan *k
 		if len(putBackChannel) > 100 {
 			// We have too many CountMessagesToCommitLater in the put back channel, so we need to wait for some to be processed
 			zap.S().Debugf("%s Waiting for put back channel to empty: %d", identifier, len(putBackChannel))
-			time.Sleep(OneSecond)
+			time.Sleep(other.OneSecond)
 			continue
 		}
 
 		if nearMemoryLimit {
-			time.Sleep(OneSecond)
+			time.Sleep(other.OneSecond)
 			continue
 		}
 
@@ -104,7 +105,7 @@ func ProcessKafkaQueue(identifier string, topic string, processorChannel chan *k
 			// This is fine, and expected behaviour
 			if err.(kafka.Error).Code() == kafka.ErrTimedOut {
 				// Sleep to reduce CPU usage
-				time.Sleep(OneSecond)
+				time.Sleep(other.OneSecond)
 				continue
 			} else if err.(kafka.Error).Code() == kafka.ErrUnknownTopicOrPart {
 				// This will occur when no topic for the regex is available !

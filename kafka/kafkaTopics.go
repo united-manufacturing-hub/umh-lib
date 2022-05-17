@@ -1,4 +1,4 @@
-package internal
+package kafka
 
 import (
 	"github.com/hashicorp/golang-lru"

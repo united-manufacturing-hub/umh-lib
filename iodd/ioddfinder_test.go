@@ -1,14 +1,15 @@
-package internal
+package iodd
 
 import (
 	"fmt"
+	"github.com/united-manufacturing-hub/umh-lib/v2/other"
 	"os"
 	"path/filepath"
 	"testing"
 )
 
 func TestGetIoddFile(t *testing.T) {
-	InitMemcache()
+	other.InitMemcache()
 	//Siemens AG | SIRIUS ACT Electronic Module 4DI/4DQ for IO-Link
 	err := AssertIoddFileGetter(42, 278531, 2)
 	if err != nil {
